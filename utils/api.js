@@ -1,3 +1,6 @@
+import {AsyncStorage} from "react-native"
+const FLASHCARDS_STORAGE_KEY = "flashcards: decks"
+
 const initialData = {
     React: {
       title: 'React',
@@ -45,3 +48,14 @@ const initialData = {
 
   export const getData = () => { return initialData
   }
+
+    export function getDecks () {
+      return AnsyncStorage.getItem(FLASHCARDS_STORAGE_KEY).then(results => {
+      if(results === null) {
+        AsyncStorage.setItem(FLASHCARDS_STORAGE_KEY, JSON.stringify(initialData))
+        return initialData
+      }else {
+        return JSON.parse(results)
+      }
+      })
+    }
