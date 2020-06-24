@@ -4,7 +4,7 @@ import { StyleSheet, View, Text} from "react-native";
 export class Decks extends Component {
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <Text>Decks</Text>
             </View>
         )
@@ -19,5 +19,5 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
   });
-  
+
 export default Decks

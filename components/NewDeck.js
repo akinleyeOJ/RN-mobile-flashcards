@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import {StyleSheet, Text, View} from "react-native";
+
 export class NewDeck extends Component {
     render() {
         return (
-            <div>
-                
-            </div>
+            <View style={styles.container}>
+                <Text>1</Text>
+            </View>
         )
     }
 }
