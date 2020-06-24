@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import {StyleSheet, Text, View} from "react-native";
+import { getData } from '../utils/api'
 export class ViewDeck extends Component {
     render() {
+        const deck = this.props.navigation.state.params.entryId
+        const decks = getData()
         return (
-            <div>
-                
-            </div>
+            <View style={styles.container}>
+                <Text>{decks[deck].title} </Text>
+                <Text>{decks[deck].questions.length} </Text>
+            </View>
         )
     }
 }

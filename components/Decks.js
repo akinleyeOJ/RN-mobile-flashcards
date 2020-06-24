@@ -1,11 +1,26 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text} from "react-native";
+import { StyleSheet, View, Text, Button} from "react-native";
+import {getData} from "../utils/api"
 
 export class Decks extends Component {
     render() {
+        const decks = getData()
+        
         return (
             <View style={styles.container}>
-                <Text>Decks</Text>
+                {Object.keys(decks).map((deck) => {
+                     const {title, questions } =decks[deck]
+                return(
+              <View key={deck}>
+                  <Text>{title}</Text>
+                <Text>{questions.length}</Text>
+                <Button onPress={() => 
+                    this.props.navigation.navigate('ViewDeck', 
+                    {entryId: deck})} title="view deck">
+
+                    </Button>
+                    </View>
+                )})}
             </View>
         )
     }
