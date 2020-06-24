@@ -1,4 +1,4 @@
-const decks = {
+const initialData = {
     React: {
       title: 'React',
       questions: [
