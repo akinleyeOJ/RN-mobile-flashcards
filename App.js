@@ -9,6 +9,7 @@ import {purple, white} from './utils/colors'
 import {Provider} from "react-redux"
 import reducer  from "./reducers"
 import  { createStore } from "redux"
+import AddCard from "./components/AddCard"
 
 
 const Tabs = TabNavigator ( {
@@ -49,6 +50,16 @@ ViewDeck: {
   screen: ViewDeck,
   navigationOptions: {
     title: "Deck Info",
+    headerTintColor: white,
+    headerStyle: {
+      backgroundColor: purple
+    }
+  }
+},
+AddCard: {
+  screen: AddCard,
+  navigationOptions: {
+    title: "Add Card",
     headerTintColor: white,
     headerStyle: {
       backgroundColor: purple
