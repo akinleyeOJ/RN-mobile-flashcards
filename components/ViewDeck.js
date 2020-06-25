@@ -7,7 +7,7 @@ import { white, purple } from '../utils/colors';
 
 
 
-export class ViewDeck extends Component {
+export class ViewDeck extends React.Component {
     render() {
         const deck = this.props.navigation.state.params.entryId
         const {decks} = this.props
@@ -17,7 +17,8 @@ export class ViewDeck extends Component {
                 <Text>{decks[deck].questions.length} </Text>
            <ActionButton styles={styles} color={purple}
                text={'Add Card'} 
-               onPress={() => this.props.navigation.navigate("AddDeck", {entryId: deck })}/>
+               onPress={() => this.props.navigation.navigate("AddCard", {entryId: deck })}
+               />
             <ActionButton styles={styles} color={purple}
                text={'Start Quiz'} 
                onPress={() => this.props.navigation.navigate("Quiz", {entryId: deck })}/>
