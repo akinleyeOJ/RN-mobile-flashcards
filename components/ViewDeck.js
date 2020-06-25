@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import {StyleSheet, Text, View} from "react-native";
 import { getData } from '../utils/api'
+import {connect} from "react-redux"
 export class ViewDeck extends Component {
     render() {
         const deck = this.props.navigation.state.params.entryId
-        const decks = getData()
+        const {decks} = this.props
         return (
             <View style={styles.container}>
                 <Text>{decks[deck].title} </Text>
@@ -23,5 +24,10 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
   });
+  function mapStateToProps(decks){
+    return {
+      decks
+      }
+    }
 
-export default ViewDeck
+export default connect(mapStateToProps)(ViewDeck)
