@@ -6,6 +6,9 @@ import ViewDeck from "./components/ViewDeck"
 import { TabNavigator, StackNavigator } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
 import {purple, white} from './utils/colors'
+import {Provider} from "react-redux"
+import reducer  from "./reducers"
+import  { createStore } from "redux"
 
 
 const Tabs = TabNavigator ( {
@@ -57,9 +60,11 @@ ViewDeck: {
 export default class App extends React.Component {
   render(){
   return (
+    <Provider store={createStore(reducer)}>
     <View style={{flex: 1}}>
       <MainNavigator />
     </View>
+    </Provider>
   );
 }
 }
