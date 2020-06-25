@@ -60,3 +60,13 @@ const initialData = {
       }
       })
     }
+
+    export function saveDeckTitle(title){
+      return AsyncStorage.mergeItem(FLASHCARDS_STORAGE_KEY, JSON.stringify({
+        [title]: {
+          title: title,
+          questions: []
+        }
+      }
+   ))
+    }
