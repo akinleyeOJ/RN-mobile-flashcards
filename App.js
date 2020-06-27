@@ -1,16 +1,26 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Platform } from 'react-native';
+import {AsyncStorage} from 'react-native';
+import 'react-native-gesture-handler';
 import Decks from "./components/Decks"
 import NewDeck from "./components/NewDeck"
 import ViewDeck from "./components/ViewDeck"
-import { TabNavigator, StackNavigator } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons'
 import {purple, white} from './utils/colors'
 import {Provider} from "react-redux"
-import reducer  from "./reducers"
-import  { createStore } from "redux"
 import Constants from "expo-constants"
+import reducer  from "./reducers"
+import middleware from './middleware'
+import { handleReceiveDecks } from "./actions/index"
+import  { createStore } from "redux"
+import Tabs from "./components/Tabs"
 import AddCard from "./components/AddCard"
+import Quiz from "./components/Quiz"
+
+
+
 
 function MyStatusBar ({backgroundColor, ...props}) {
   return(
@@ -20,34 +30,9 @@ function MyStatusBar ({backgroundColor, ...props}) {
   )
 }
 
-const Tabs = TabNavigator ( {
-  Decks: {
-    screen: Decks,
-    navigationOptions: {
-      tabBarIcon: tabInfo => {
-        return (
-          <Ionicons name="ios-albums" size={25} color={tabInfo.tintColor} />
-        );
-      },
-      tabBarColor: purple,
-      tabBarLabel: <Text>Decks</Text>
-    }
-  },
-  NewDeck: {
-    screen: NewDeck,
-    navigationOptions: {
-      tabBarIcon: tabInfo => {
-        return <Ionicons name="ios-add" size={25} color={tabInfo.tintColor} />;
-
-      },
-      tabBarColor: purple,
-      tabBarLabel: <Text >Add Deck</Text>
-    }
-  }
-});
 
 
-const MainNavigator = StackNavigator({
+const MainNavigator = createAppContainer(createStackNavigator({
 Home: {
   screen: Tabs,
   navigationOptions: {
@@ -56,30 +41,50 @@ Home: {
 },
 ViewDeck: {
   screen: ViewDeck,
-  navigationOptions: {
+  navigationOptions: ({navigation}) => ({
     title: "Deck Info",
     headerTintColor: white,
     headerStyle: {
       backgroundColor: purple
     }
-  }
+  })
 },
 AddCard: {
   screen: AddCard,
-  navigationOptions: {
+  navigationOptions: ({navigation}) => ({
     title: "Add Card",
     headerTintColor: white,
     headerStyle: {
       backgroundColor: purple
     }
-  }
-}
   })
+},
+Quiz: {
+  screen: Quiz,
+  navigationOptions: ({navigation}) => ({
+    title: `Quiz: ${navigation.state.params.deck.title}`,
+    headerBackTitle: '',
+    headerTintColor: white,
+    headerStyle: {
+      backgroundColor: purple
+    }
+  })
+}},
+));
+
+const store = createStore(reducer, middleware);
 
 export default class App extends React.Component {
+
+  storageKey = '@mobile-flashcard:state';
+
+  componentDidMount() {
+    store.dispatch(handleReceiveDecks());
+  }
+  
   render(){
   return (
-    <Provider store={createStore(reducer)}>
+    <Provider store={store}>
     <View style={{flex: 1}}>
       <MyStatusBar backgroundColor={purple} barStyle="Light-content" />
       <MainNavigator />
