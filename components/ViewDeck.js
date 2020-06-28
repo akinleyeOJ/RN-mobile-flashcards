@@ -18,7 +18,7 @@ export class ViewDeck extends React.Component {
 
   deleteDeck = () => {
     const { deck } = this.props
-    Alert.alert('Confirm Delete !',
+    Alert.alert(deck.title, 'Confirm Delete !',
       [
         { text: 'Yes', onPress: () => this.handleDelete() },
         { text: 'Cancel', style: 'cancel' },
@@ -39,22 +39,17 @@ export class ViewDeck extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.card}>
-          <Text style={{ textAlign: 'center', fontSize: 30 }}>{deck.title}</Text>
-          <Text style={{ marginTop: 10, textAlign: 'center', fontSize: 20, color: 'darkslategray' }}>{Object.keys(deck.flashcards).length} Cards in Deck</Text>
+          <Text style={styles.mainText}>{deck.title}</Text>
+          <Text style={styles.otherText}>{Object.keys(deck.flashcards).length} Cards in Deck</Text>
         
           <ActionButton styles={styles} color={purple} text={'Add Card'}  onPress={() => this.props.navigation.navigate('AddCard', { deck: deck })} />
           
-
           <ActionButton  styles={styles} color={yellow} text={'Quiz'} onPress={() => this.props.navigation.navigate('Quiz', { deck: deck })} />
-         
-  
-        </View>
-        <View style={{ paddingHorizontal: 50, paddingBottom: 100 }}>
-          <TouchableOpacity onPress={this.deleteDeck}>
-            <View style={{ minWidth: '50%', marginVertical: 10, backgroundColor: 'maroon', borderRadius: 5, padding: 10 }}>
-              <Text style={{ color: 'white', textAlign: 'center', fontSize: 14, fontWeight: 'bold' }}>Delete Deck</Text>
-            </View>
-          </TouchableOpacity>
+
+          <ActionButton color={purple} styles={styles} text={'Delete Deck'} 
+          
+          onPress={this.deleteDeck} />
+
         </View>
         </View>
     )
