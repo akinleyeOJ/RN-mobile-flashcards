@@ -5,7 +5,7 @@ import {connect} from "react-redux"
 import ActionButton from './ActionButton'
 import { handleDeleteDeck } from '../actions/index'
 
-import { white, purple, green, yellow } from '../utils/colors';
+import { white, black, red, purple, green, yellow } from '../utils/colors';
 
 
 export class ViewDeck extends React.Component {
@@ -44,9 +44,9 @@ export class ViewDeck extends React.Component {
         
           <ActionButton styles={styles} color={purple} text={'Add Card'}  onPress={() => this.props.navigation.navigate('AddCard', { deck: deck })} />
           
-          <ActionButton  styles={styles} color={yellow} text={'Quiz'} onPress={() => this.props.navigation.navigate('Quiz', { deck: deck })} />
+          <ActionButton  styles={styles} color={green} text={'Quiz'} onPress={() => this.props.navigation.navigate('Quiz', { deck: deck })} />
 
-          <ActionButton color={purple} styles={styles} text={'Delete Deck'} 
+          <ActionButton color={red} styles={styles} text={'Delete Deck'} 
           
           onPress={this.deleteDeck} />
 
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "stretch",
       padding: 10,
-      backgroundColor: green,
+      backgroundColor: black,
       justifyContent: "center",
       margin: 8,
     

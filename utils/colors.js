@@ -1,3 +1,5 @@
 export const purple = "#292477"
 export const white = "#fff"
 export const green = "#32CD32"
+export const red = "#FF6347"
+export const black = "#808080"
