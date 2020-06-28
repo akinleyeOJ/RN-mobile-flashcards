@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import ActionButton from './ActionButton'
 import { addFlashcard, } from '../actions/index'
 import { Info } from './Info.js'
+import { clearLocalNotification, setLocalNotification } from '../utils/helpers'
 
 class Quiz extends React.Component {
 
@@ -57,11 +58,15 @@ class Quiz extends React.Component {
     this.props.navigation.goBack();
   }
 
-
+  updateNotificationSchedule = () => {
+    clearLocalNotification().then(setLocalNotification);
+  }
 
   renderCompleted = () => {
     const { deck } = this.props.navigation.state.params;
-    return (
+   
+	this.updateNotificationSchedule()
+	return (
       <View  style={styles.container}>
         <View style={styles.card}>
           <Text style={{textAlign: 'center', fontSize: 24, marginBottom: 20 }}>Quiz Completed!</Text>
