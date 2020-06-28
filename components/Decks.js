@@ -4,7 +4,7 @@ import {getData} from "../utils/api"
 import {connect} from "react-redux"
 import {getDecks } from '../utils/api'
 import {recieveDecks } from "../actions"
-import { purple, white } from '../utils/colors';
+import { purple, black, white } from '../utils/colors';
 
 class Decks extends React.Component{
     render() {
@@ -25,11 +25,11 @@ class Decks extends React.Component{
         data={deckData}
         renderItem={({ item }) => {
           return (
-            <View style={{ justifyContent: 'center', padding: 40, borderBottomWidth: 1, borderBottomColor: 'lightgray' }}>
+            <View style={styles.container}>
               <TouchableOpacity onPress={() => this.props.navigation.navigate('Deck', {deck: item})}>
                 <View>
                   <Text style={{textAlign: 'center', fontSize: 18, color: 'black', paddingVertical: 10, fontWeight: 'bold' }}>{item.title}</Text>
-                  <Text style={{textAlign: 'center', fontSize: 16, color: 'darkgray' }}>{Object.keys(item.flashcards || {}).length} cards</Text>
+                  <Text style={{textAlign: 'center', fontSize: 16, color: 'white' }}>{Object.keys(item.flashcards || {}).length} cards</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -46,11 +46,18 @@ class Decks extends React.Component{
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      margin: 8,
+      height: 200,
+      borderRadius: 20,
+      borderColor: "black",
+      backgroundColor: 'purple',
       paddingHorizontal: 20,
       alignSelf: "stretch",
       justifyContent: "center",
-      padding: 5
+      padding: 45,
+      marginTop: 20,
+      borderBottomColor: 'black',
+      borderBottomWidth: 2,
     }, card: {
       flex: 1,
       alignItems: "center",
