@@ -39,7 +39,7 @@ Home: {
     header: null
   }
 },
-ViewDeck: {
+Deck: {
   screen: ViewDeck,
   navigationOptions: ({navigation}) => ({
     title: "Deck Info",
