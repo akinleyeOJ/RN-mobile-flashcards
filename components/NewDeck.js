@@ -1,38 +1,52 @@
 import React, { Component } from 'react'
-import {StyleSheet, Text, TextInput, Button, View} from "react-native";
+import {StyleSheet, Text, TextInput, Button, View, TouchableOpacity} from "react-native";
 import {saveDeckTitle} from '../utils/api'
-import {AddDeck, addDeck} from "../actions"
+import {handleAddDeck, addDeck} from "../actions"
 import {connect} from "react-redux"
+import { purple } from '../utils/colors';
 
-import SubmitButton from "./SubmitButton";
-
-
-export class NewDeck extends Component {
+class NewDeck extends React.Component {
     state = {
-        text: ''
+        title: '',
     }
-     submitName=() => {
-         const { text } = this.state
-     
-   saveDeckTitle(text)
-   this.props.dispatch(addDeck(text))
-   this.props.navigation.navigate("ViewDeck", {entryId: text })
-   this.setState({ text: ''})
+   
+ addDeck = () => {
+        let { title } = this.state;
+        title = title.trim();
+        if (!title) {
+
+            alert(
+             'Please Input Title'
+             );
+
+         return;
+        }
+          this.props.dispatch(handleAddDeck(title));
+          this.setState({title: ''});
+        this.props.navigation.goBack();
+    }
+
+    render() {     
+      return (
+          <View style={styles.container}>
+              <View style={{flex: 1, paddingVertical: 10, justifyContent: 'center'}}>
+                  <Text style={styles.title}>Title of your new deck:</Text>
+                  <TextInput 
+                     style={styles.input} onChangeText={text => this.setState({title: text})}
+                      value={this.state.title} />
+              </View>
+              <View style={{flex: 1, justifyContent: 'flex-end', paddingBottom: 100}}>
+                  <TouchableOpacity onPress={this.addDeck}>
+                      <View >
+                          <Text style={styles.submitBtn}>Add Deck</Text>
+                      </View>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      )
+    }
 }
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.title}>New Decks Title?</Text>
-                <TextInput style={styles.input} onChangeText={(text) => this.setState({ text: text})} value={this.state.text}>
-                </TextInput>
-                <SubmitButton
-                   style={styles.submitBtn} onPress={(this.submitName)}
-                 />
-            </View>
-        )
-    }
-}
 
 
 const styles = StyleSheet.create({
@@ -43,12 +57,15 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 30,
-        color: "#333"
+        color: "#333",
+        textAlign: "center"
     },
     submitBtn: {
-        borderWidth: 0.5,
-        borderColor: "#d6d7da",
-        padding: 10,
+        borderWidth: 1.5,
+        borderColor: "#FFF",
+        color: "#FFF",
+        backgroundColor: purple,
+        padding: 20,
         borderRadius: 7
     },
     input: {
