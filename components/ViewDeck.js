@@ -1,76 +1,60 @@
 import React, { Component } from 'react'
-import {StyleSheet, Text, View, TouchableOpacity, Alert} from "react-native";
+import {StyleSheet, Text, View, Alert, Button} from "react-native";
 import { getData } from '../utils/api'
 import {connect} from "react-redux"
 import ActionButton from './ActionButton'
+import { white, black, red, purple } from '../utils/colors';
 import { handleDeleteDeck } from '../actions/index'
-
-import { white, black, red, purple, green, yellow } from '../utils/colors';
 
 
 export class ViewDeck extends React.Component {
 
-  handleDelete = () => {
-    const { deck } = this.props
-    this.props.dispatch(handleDeleteDeck(deck.id))
-    this.props.navigation.goBack();
-  }
 
-  deleteDeck = () => {
-    const { deck } = this.props
-    Alert.alert(deck.title, 'Confirm Delete !',
-      [
-        { text: 'Yes', onPress: () => this.handleDelete() },
-        { text: 'Cancel', style: 'cancel' },
-      ],
-      { cancelable: true }
-    );
-
-  }
-
-
-  render() {
-    const { deck } = this.props
-
-    if (!deck) {
-      return null
+    render() {
+        const deck = this.props.navigation.state.params.entryId
+        const {decks} = this.props
+        let disabled
+        if(decks[deck].questions.length === 0) {
+          disabled = true
+        } else {
+          disabled = false
+        }
+        return (
+            <View style={styles.container}>
+                <Text style={styles.mainText}>{decks[deck].title} </Text>
+                <Text style={styles.otherText}>{decks[deck].questions.length} Cards </Text>
+                <Text style={styles.otherText}>Enter Cards To Start Quiz</Text>
+           <ActionButton styles={styles} color={purple}
+               text={'Add Card'} 
+               onPress={() => this.props.navigation.navigate("AddCard", {entryId: deck })}
+               />
+            <ActionButton styles={styles} color={black} disabled={disabled} style={disabled ? styles.disabled : styles.styles}
+               text={'Start Quiz'} 
+               onPress={() => this.props.navigation.navigate("Quiz", {entryId: deck })}/>
+               <ActionButton color={red} styles={styles} text={'Delete Deck'}  />
+            </View>
+            
+        )
     }
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.card}>
-          <Text style={styles.mainText}>{deck.title}</Text>
-          <Text style={styles.otherText}>{Object.keys(deck.flashcards).length} Cards in Deck</Text>
-        
-          <ActionButton styles={styles} color={purple} text={'Add Card'}  onPress={() => this.props.navigation.navigate('AddCard', { deck: deck })} />
-          
-          <ActionButton  styles={styles} color={green} text={'Quiz'} onPress={() => this.props.navigation.navigate('Quiz', { deck: deck })} />
-
-          <ActionButton color={red} styles={styles} text={'Delete Deck'} 
-          
-          onPress={this.deleteDeck} />
-
-        </View>
-        </View>
-    )
-  }
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  iosBtn: {
-      borderRadius: 7,
-      width: 170,
-      padding: 10,
-      height: 45,
-      margin: 5
-  },
-  submitBtnText: {
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iosBtn: {
+        borderRadius: 7,
+        width: 170,
+        padding: 10,
+        height: 45,
+        margin: 5
+    },
+    submitBtnText: {
       color: white,
       textAlign: 'center',
       fontSize: 22
@@ -92,19 +76,18 @@ const styles = StyleSheet.create({
       }, shadowRadius: 4, shadowOpacity: 1},
       mainText: {
           fontSize: 40,
-          color: white
+          color: black
       },
       otherText: {
         fontSize: 30,
-        color: white,
+        color: purple,
         marginBottom: 160
       }
 });
-
-function mapStateToProps(state, props) {
-  return {
-    deck: state.decks[props.navigation.state.params.deck.id]
-  }
-}
+  function mapStateToProps(decks){
+    return {
+      decks
+      }
+    }
 
 export default connect(mapStateToProps)(ViewDeck)

@@ -54,6 +54,6 @@ const Tabs = {
     }
   }
   
-  const TabsView = createBottomTabNavigator(Tabs, navigationOptions)
+  const Tab = createBottomTabNavigator(Tabs, navigationOptions)
 
-  export default TabsView
+  export default Tab

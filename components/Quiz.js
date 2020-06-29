@@ -1,144 +1,119 @@
 import React from 'react'
+import { NavigationActions } from 'react-navigation'
 import { StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView, Animated } from 'react-native'
-import { orange, white, purple, red, green } from '../utils/colors'
-import { SubmitButton } from './SubmitButton'
+import {purple, red, black, white } from '../utils/colors'
 import { connect } from 'react-redux'
 import ActionButton from './ActionButton'
-import { addFlashcard, } from '../actions/index'
 import { Info } from './Info.js'
-import { clearLocalNotification, setLocalNotification } from '../utils/helpers'
+
 
 class Quiz extends React.Component {
 
-    state = {
-     nextIndex: 0,
-     correct: 0,
-     incorrect: 0,
-     showAnswer: false,
-  }
+	state={
+		questionNumber: 0,
+		showQuestion: false,
+		correct: 0,
+		incorrect: 0,
+	}
 
-  showAnswer = () => {
+showAnswer = () => (
+	!this.state.showQuestion ? this.setState({ showQuestion: true })
+	: this.setState({ showQuestion: false })
+)
 
-  }
+submitAnswer = (answer) => {
 
-  computeAccuracy = () => {
-    const total = this.state.correct + this.state.incorrect;
-    if (total === 0) return 0;
+	const { questionNumber } = this.state
+	const deck = this.props.navigation.state.params.entryId
+	const decks = this.props.decks
+	const correct = decks[deck].questions[questionNumber].correctAnswer.toLowerCase()
 
-    return (this.state.correct * 100.0) / total;
-  }
+	if(answer.trim() === correct.trim()){
+		this.setState({ correct: this.state.correct + 1 })
+	}else {
+		this.setState({ incorrect: this.state.incorrect + 1 })
+	}
+	this.setState({ questionNumber: this.state.questionNumber + 1, showQuestion: false })
 
-  handleCorrect = () => {
-    this.setState((prevState) => ({
-      nextIndex: prevState.nextIndex + 1,
-      correct: prevState.correct + 1,
-      showAnswer: false
-    }));
-  } 
-  
-  
-  handleIncorrect = () => {
-    this.setState((prevState) => ({
-      nextIndex: prevState.nextIndex + 1,
-      incorrect: prevState.incorrect + 1,
-      showAnswer: false
-    }));
-  }
+}
 
-  handleRestartQuiz = () => {
-    this.setState({
-      nextIndex: 0,
-      correct: 0,
-      incorrect: 0,
-      showAnswer: false,
-    })
-  }
 
-  handleBackToDeck = () => {
-    this.props.navigation.goBack();
-  }
 
-  updateNotificationSchedule = () => {
-    clearLocalNotification().then(setLocalNotification);
-  }
+	tryAgain = () => {
+			this.setState({
+				questionNumber: 0, 
+				showQuestion: false,
+				correct: 0,
+				incorrect: 0,
+			})
+		}
 
-  renderCompleted = () => {
-    const { deck } = this.props.navigation.state.params;
-   
-	this.updateNotificationSchedule()
-	return (
-      <View  style={styles.container}>
-        <View style={styles.card}>
-          <Text style={{textAlign: 'center', fontSize: 24, marginBottom: 20 }}>Quiz Completed!</Text>
-          <View >
-            <View style={styles.container}>
-              <Text  style={styles.mainText}>You got: </Text>
-              <Text style={{textAlign: 'center', fontSize: 24, marginBottom: 20 }}>{this.state.correct} out of {Object.keys(deck.flashcards).length} right</Text>
-            </View>
-   
-             <ActionButton styles={styles} text={'TryAgain'} color={green}  onPress={this.handleRestartQuiz}/>
-			 <ActionButton styles={styles} text={'Back'} color={red}  onPress={this.handleBackToDeck}/>
-          </View>
+	backBtn = () => {
+		this.props.navigation.dispatch(NavigationActions.back({ key: null }))
+	}	
 
-        </View>
-      </View>
-    );
-  }
 
-  renderFlashcard = () => {
-        const { deck } = this.props.navigation.state.params;
-       const flashcardIds = Object.keys(deck.flashcards);
-         const flashcard = deck.flashcards[flashcardIds[this.state.nextIndex]];
+	render(){
+		const questionNumber = this.state.questionNumber
+		const decks = this.props.decks
+		const deck = this.props.navigation.state.params.entryId
+		const number = this.state.questionNumber + 1
 
-      return (
-        <View style={styles.container}>
-        <View style={styles.card}>
-          <Text style={{ marginVertical: 20, textAlign: 'center', fontSize: 20, color: 'gray' }}>{this.state.nextIndex+1} of {flashcardIds.length}</Text>
-          {this.state.showAnswer 
-            ? <View>
-				<Text style={{marginRight: "0%",  marginTop: 40, fontSize: 20, textAlign: 'center'}}>Answer: {this.state.showAnswer ? flashcard.answer : ' '}</Text>
-                <Text style={{ marginTop: 80, marginRight: 0, textAlign: 'center', fontSize: 17,  color: 'darkslategray' }}>Flip Card to View Question</Text>
-                
-              </View>
-            : <View>
-                <Text style={{marginRight: "0%",  marginTop: 40, fontSize: 20, textAlign: 'center'}}>Question: {flashcard.question}</Text>
-                <Text style={{ marginTop: 80, marginRight: 0, textAlign: 'center', fontSize: 17,  color: 'darkslategray' }}>Flip Card to View Answer</Text>
-              </View>
-          }
+		if(questionNumber === decks[deck].questions.length){
+			return (
+				<View style={styles.container}>
+					<View style={styles.card}>
 
-          
-            <View style={{ marginTop: 40, borderRadius: 5, padding: 10 }}>
-			<ActionButton color={purple} styles={styles} text={'Flip Card'} onPress={() => this.setState((prevState) => ({showAnswer: !prevState.showAnswer}))} />
-            </View>
-        </View>
-        <View style={styles.lowerBtns}>
-          <ActionButton color={green} styles={styles} text={'Correct'} onPress={this.handleCorrect} />
-           
+					<View>
+						<Text style={styles.mainText}>
+              You got {this.state.correct} of {decks[deck].questions.length} right
+             </Text>
+             { this.state.correct > this.state.incorrect ? <Text style={{fontSize: 90}}></Text>
+             : <Text style={{fontSize: 90}}></Text>}
+					</View>
+							<ActionButton styles={styles} text={'TryAgain'} color={purple} onPress={this.tryAgain}/>
+							<ActionButton styles={styles} text={'Back'} color={red} onPress={this.backBtn}/>
+					</View>
+				</View>
+			)
+		}
+		return(
+			<View style={styles.container}>
+				<View style={styles.card}>
+					<Text style={styles.top}>{number} of {decks[deck].questions.length}</Text>
 
-          <ActionButton color={red} styles={styles} text={'Incorrect'} onPress={this.handleIncorrect} />
-        </View>
-      </View>
-    );
-  }
+          {!this.state.showQuestion
+           ? <Text 
+           style={styles.mainText}>{decks[deck].questions[questionNumber].question}
+           </Text>
+           : <Text 
+           style={styles.mainText}>{decks[deck].questions[questionNumber].answer}
+           </Text>}
 
-  render() {
-    const { deck } = this.props.navigation.state.params;
-    const flashcardIds = Object.keys(deck.flashcards);
+          {!this.state.showQuestion 
+          ? <Info style={styles.answer}
+          text={'Show Answer'} 
+          onPress={this.showAnswer}>
 
-    if (flashcardIds.length === 0) {
-      return (
-        <View style={{flex: 1, justifyContent: 'center', padding: 20}}>
-          <Text style={{textAlign: 'center', fontSize: 20}}>No cards, Add cards to start quiz.</Text>
-        </View>
-      );
-    }
+          </Info>
+          : <Info 
+          style={styles.answer} 
+          text={'Show Question'}
+           onPress={this.showAnswer}>
+             </Info>}
 
-    if (this.state.nextIndex >= flashcardIds.length) {
-      return this.renderCompleted();
-    } else {
-      return this.renderFlashcard();
-    }
-  }
+					<View>
+            <ActionButton 
+            color={purple} styles={styles} text={'Correct'} 
+            onPress={() => this.submitAnswer('true')}/>
+            <ActionButton 
+            color={red} styles={styles} text={'Incorrect'} 
+            onPress={() => this.submitAnswer('false')}/>
+					</View>
+				</View>
+			</View>
+		)
+	}
 }
 
 const styles = StyleSheet.create({
@@ -155,52 +130,51 @@ const styles = StyleSheet.create({
     	width: 160  
   },
   	submitBtnText: {
-    	color: white,
+    	color: "white",
     	fontSize: 26,
     	textAlign: 'center',
   },
- 	 questions: {
+ 	 top: {
   		top: 0,
-  		alignSelf: 'flex-start',
-  		left: 0,
-  		color: white,
+  		textAlign: 'center',
+  		left: 150,
+  		color: "white",
   		fontSize: 20,
   		margin: 5,
   		position: 'absolute',
   },
   	answer: {
-  		color: white,
+  		color: "white",
   		fontSize: 20,
   		margin: 20,
   },
- 	 card: {
-		flex: 1,
-		justifyContent: 'space-around',
-		alignItems: 'center',
-		margin: 10,
-		backgroundColor: orange,
-		alignSelf: 'stretch',
-		borderRadius: 10,
-		shadowColor: 'rgba(0,0,0,0.34)',
-        shadowOffset: {
-        width: 0,
-        height: 3
-      },
-      shadowRadius: 4,
-      shadowOpacity: 1
-	},
+  card: {
+    flex: 1,
+	alignItems: "center",
+	alignSelf: "stretch",
+    backgroundColor: black,
+    justifyContent: "center",
+    margin: 8,
+    height: 200,
+    borderRadius: 10,
+    shadowColor: "rgba(0,0,0,0.34)",
+    shadowOffset: {
+      width: 20,
+      height: 3,
+    }, shadowRadius: 4, shadowOpacity: 1},
 	mainText: {
 		fontSize: 40,
 		color: white,
 		marginTop: 40,
 		textAlign: 'center'
-	},
-	lowerBtns: { 
-		flex: 1, 
-		justifyContent: 'flex-end', 
-		paddingHorizontal: 50, 
-		paddingVertical: 100 
 	}
+
 })
 
-export default connect()(Quiz)
+function mapStateToProps(decks){
+	return {
+		decks
+	}
+}
+
+export default connect(mapStateToProps)(Quiz)
