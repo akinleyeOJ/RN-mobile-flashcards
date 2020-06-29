@@ -1,5 +1,4 @@
 # RND-Mobile-Flashcards
-A fun app that provides an interface where users can create decks of flashcards, add flashcards to a deck, run a quiz on any deck with a summary of their performance at the end of the quiz.
 
 ## Technology and Tools
 - Figma (UI/UX)
